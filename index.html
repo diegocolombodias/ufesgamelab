@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameLab — Projeto de Extensão</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --c-bg:        #0b0f1a;
+      --c-surface:   #111827;
+      --c-card:      #161d2e;
+      --c-border:    rgba(255,255,255,0.07);
+      --c-text:      #e2e8f0;
+      --c-muted:     #8494a8;
+      --c-accent1:   #6ee7b7;   /* verde jade */
+      --c-accent2:   #818cf8;   /* índigo */
+      --c-accent3:   #f472b6;   /* rosa */
+      --c-accent4:   #fbbf24;   /* âmbar */
+      --r-card:      16px;
+      --font-head:   'Syne', sans-serif;
+      --font-body:   'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--c-bg);
+      color: var(--c-text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise grain overlay ──────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.6;
+    }
+
+    /* ── Hero ─────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-glow-1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(110,231,183,0.18) 0%, transparent 70%);
+      top: -100px; left: -150px;
+      animation: drift1 12s ease-in-out infinite alternate;
+    }
+    .hero-glow-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(129,140,248,0.16) 0%, transparent 70%);
+      bottom: -80px; right: -120px;
+      animation: drift2 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px,40px); } }
+    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px,-30px); } }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-head);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--c-accent1);
+      border: 1px solid rgba(110,231,183,0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(8px);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-head);
+      font-size: clamp(3rem, 9vw, 7rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.9s 0.1s ease both;
+    }
+
+    .hero-title .word-game {
+      color: var(--c-text);
+    }
+    .hero-title .word-lab {
+      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      margin-top: 1.5rem;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--c-muted);
+      max-width: 620px;
+      font-weight: 300;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2.5rem;
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    .hero-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--c-muted);
+    }
+    .hero-meta-item .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--c-accent1);
+      flex-shrink: 0;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--c-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fadeUp 1s 0.5s ease both;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--c-muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.15); }
+    }
+
+    /* ── Section Container ────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Section ──────────────────────────────────────────── */
+    section {
+      padding: 6rem 0;
+    }
+
+    .section-label {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--c-accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .section-desc {
+      margin-top: 1rem;
+      color: var(--c-muted);
+      max-width: 580px;
+      font-size: 1.05rem;
+      font-weight: 300;
+    }
+
+    /* ── About ────────────────────────────────────────────── */
+    #sobre {
+      background: var(--c-surface);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      margin-top: 3.5rem;
+    }
+
+    .about-text p {
+      color: var(--c-muted);
+      margin-bottom: 1.2rem;
+      font-weight: 300;
+      font-size: 1.05rem;
+    }
+    .about-text p strong {
+      color: var(--c-text);
+      font-weight: 500;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .stat-card {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-card);
+      padding: 1.5rem;
+      transition: border-color 0.3s;
+    }
+    .stat-card:hover { border-color: rgba(110,231,183,0.25); }
+
+    .stat-number {
+      font-family: var(--font-head);
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      margin-top: 0.4rem;
+      font-size: 0.85rem;
+      color: var(--c-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Objectives ───────────────────────────────────────── */
+    #objetivos {
+      background: var(--c-bg);
+    }
+
+    .obj-list {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .obj-item {
+      position: relative;
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-card);
+      padding: 2rem 1.75rem;
+      transition: transform 0.3s, border-color 0.3s;
+      overflow: hidden;
+    }
+    .obj-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--obj-color, var(--c-accent1));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .obj-item:hover { transform: translateY(-4px); }
+    .obj-item:hover::before { opacity: 1; }
+    .obj-item:hover { border-color: rgba(255,255,255,0.15); }
+
+    .obj-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .obj-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .obj-desc {
+      font-size: 0.9rem;
+      color: var(--c-muted);
+      font-weight: 300;
+    }
+
+    /* ── Games ────────────────────────────────────────────── */
+    #jogos {
+      background: var(--c-surface);
+    }
+
+    .games-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3.5rem;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 2rem;
+    }
+
+    .game-card {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: transform 0.35s, box-shadow 0.35s;
+      display: flex;
+      flex-direction: column;
+    }
+    .game-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+    }
+
+    .game-card-header {
+      position: relative;
+      padding: 2.5rem 2rem 1.5rem;
+      background: var(--gc-bg, #1a2035);
+      overflow: hidden;
+    }
+    .game-card-header::after {
+      content: var(--gc-emoji);
+      position: absolute;
+      right: 1.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 5rem;
+      opacity: 0.18;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .game-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.1);
+      color: var(--gc-accent, var(--c-accent1));
+      border: 1px solid var(--gc-accent, var(--c-accent1));
+      margin-bottom: 0.75rem;
+      mix-blend-mode: screen;
+    }
+
+    .game-title {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--c-text);
+    }
+
+    .game-genre {
+      margin-top: 0.35rem;
+      font-size: 0.85rem;
+      color: var(--gc-accent, var(--c-accent1));
+      font-weight: 500;
+    }
+
+    .game-body {
+      padding: 1.75rem 2rem;
+      flex: 1;
+    }
+
+    .game-pitch {
+      font-size: 0.95rem;
+      color: var(--c-muted);
+      font-weight: 300;
+      margin-bottom: 1.5rem;
+      line-height: 1.65;
+    }
+
+    .game-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .feature-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+
+    .feature-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--gc-accent, var(--c-accent1));
+      flex-shrink: 0;
+      margin-top: 0.5rem;
+    }
+
+    .feature-text {
+      font-size: 0.875rem;
+      color: var(--c-muted);
+      font-weight: 300;
+    }
+    .feature-text strong {
+      color: var(--c-text);
+      font-weight: 500;
+    }
+
+    .game-footer {
+      padding: 1.25rem 2rem;
+      border-top: 1px solid var(--c-border);
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: var(--c-muted);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--c-border);
+      border-radius: 100px;
+      padding: 0.3rem 0.8rem;
+    }
+    .pill-icon { font-size: 0.85rem; }
+
+    /* ── Methodology ──────────────────────────────────────── */
+    #metodologia {
+      background: var(--c-bg);
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 3.5rem;
+      align-items: start;
+    }
+
+    .method-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .method-step {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .step-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--c-accent2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--c-accent2);
+      flex-shrink: 0;
+    }
+    .step-connector {
+      width: 2px;
+      flex: 1;
+      background: linear-gradient(to bottom, var(--c-accent2), transparent);
+      min-height: 40px;
+      margin: 4px 0;
+      opacity: 0.3;
+    }
+    .method-step:last-child .step-connector { display: none; }
+
+    .step-content {
+      padding-bottom: 2.5rem;
+    }
+    .step-title {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .step-desc {
+      font-size: 0.875rem;
+      color: var(--c-muted);
+      font-weight: 300;
+    }
+
+    .method-note {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-left: 3px solid var(--c-accent1);
+      border-radius: var(--r-card);
+      padding: 2rem;
+    }
+    .method-note h4 {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--c-accent1);
+    }
+    .method-note p {
+      font-size: 0.9rem;
+      color: var(--c-muted);
+      font-weight: 300;
+      margin-bottom: 0.9rem;
+    }
+    .method-note p:last-child { margin-bottom: 0; }
+
+    /* ── Results ──────────────────────────────────────────── */
+    #resultados {
+      background: var(--c-surface);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .result-card {
+      background: var(--c-card);
+      border: 1px solid var(--c-border);
+      border-radius: var(--r-card);
+      padding: 1.75rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .result-card:hover {
+      border-color: rgba(129,140,248,0.3);
+      transform: translateY(-3px);
+    }
+
+    .result-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .result-title {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .result-desc {
+      font-size: 0.875rem;
+      color: var(--c-muted);
+      font-weight: 300;
+    }
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      background: var(--c-bg);
+      border-top: 1px solid var(--c-border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-text {
+      font-size: 0.85rem;
+      color: var(--c-muted);
+      font-weight: 300;
+    }
+
+    .footer-links {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--c-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--c-accent1); }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(11,15,26,0.8);
+      border-bottom: 1px solid var(--c-border);
+    }
+
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      color: var(--c-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 400;
+    }
+    .nav-links a:hover { color: var(--c-text); }
+
+    /* ── Utilities ────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--c-accent1), var(--c-accent2));
+      border-radius: 100px;
+      margin: 1.5rem 0;
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .method-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+      .games-grid { grid-template-columns: 1fr; }
+      nav { padding: 0.75rem 1.25rem; }
+      .nav-links { gap: 1.25rem; }
+    }
+
+    @media (max-width: 600px) {
+      .results-grid { grid-template-columns: 1fr; }
+      .about-stats { grid-template-columns: 1fr 1fr; }
+      section { padding: 4rem 0; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">GameLab</a>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#objetivos">Objetivos</a></li>
+    <li><a href="#jogos">Os Jogos</a></li>
+    <li><a href="#metodologia">Metodologia</a></li>
+    <li><a href="#resultados">Resultados</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="hero-badge">Projeto de Extensão · UFES · 2025</div>
+
+  <h1 class="hero-title">
+    <span class="word-game">Game</span><span class="word-lab">Lab</span>
+  </h1>
+
+  <p class="hero-subtitle">
+    Aprendendo estatística, design e programação criando jogos reais na plataforma Roblox — onde a sala de aula encontra o videogame.
+  </p>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span class="dot"></span> Universidade Federal do Espírito Santo</div>
+    <div class="hero-meta-item"><span class="dot"></span> 4 equipes multidisciplinares</div>
+    <div class="hero-meta-item"><span class="dot"></span> Plataforma Roblox</div>
+    <div class="hero-meta-item"><span class="dot"></span> Público jovem</div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Rolar</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="container">
+    <p class="section-label">O Projeto</p>
+    <h2 class="section-title">Jogos como veículo<br />de aprendizado</h2>
+    <div class="divider"></div>
+
+    <div class="about-grid">
+      <div class="about-text">
+        <p>
+          O <strong>GameLab</strong> é um projeto de extensão universitária que conecta estudantes à prática interdisciplinar por meio da criação de jogos digitais. Os participantes aplicaram conceitos de <strong>estatística, design, programação e pensamento sistêmico</strong> em contextos lúdicos e criativos.
+        </p>
+        <p>
+          Utilizando a plataforma <strong>Roblox</strong> como ambiente de desenvolvimento, cada equipe foi responsável por conceber, documentar e protipar um jogo completo — desde o Game Design Document (GDD) até as mecânicas de jogabilidade.
+        </p>
+        <p>
+          Os projetos abordam temas variados — consciência ambiental, terror educativo, RPG universitário e gestão de recursos — demonstrando a amplitude criativa que a gamificação pode alcançar.
+        </p>
+      </div>
+
+      <div class="about-stats">
+        <div class="stat-card">
+          <div class="stat-number">4</div>
+          <div class="stat-label">Jogos desenvolvidos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">Roblox</div>
+          <div class="stat-label">Plataforma alvo</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">GDD</div>
+          <div class="stat-label">Documentação completa por equipe</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">UFES</div>
+          <div class="stat-label">Extensão universitária</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OBJETIVOS -->
+<section id="objetivos">
+  <div class="container">
+    <p class="section-label">Propósito</p>
+    <h2 class="section-title">O que o GameLab<br />busca alcançar</h2>
+    <div class="divider"></div>
+
+    <div class="obj-list">
+
+      <div class="obj-item" style="--obj-color: var(--c-accent1)">
+        <div class="obj-icon">🎮</div>
+        <div class="obj-title">Aprendizagem ativa</div>
+        <div class="obj-desc">Transformar conteúdos acadêmicos — estatística, lógica, probabilidade — em mecânicas de jogo tangíveis e engajantes.</div>
+      </div>
+
+      <div class="obj-item" style="--obj-color: var(--c-accent2)">
+        <div class="obj-icon">🤝</div>
+        <div class="obj-title">Trabalho em equipe</div>
+        <div class="obj-desc">Estimular a colaboração multidisciplinar entre estudantes de diferentes perfis para construir produtos coesos e criativos.</div>
+      </div>
+
+      <div class="obj-item" style="--obj-color: var(--c-accent3)">
+        <div class="obj-icon">🌍</div>
+        <div class="obj-title">Impacto social</div>
+        <div class="obj-desc">Produzir jogos com temas relevantes: meio ambiente, educação matemática e conexão com a identidade universitária.</div>
+      </div>
+
+      <div class="obj-item" style="--obj-color: var(--c-accent4)">
+        <div class="obj-icon">📐</div>
+        <div class="obj-title">Design orientado por dados</div>
+        <div class="obj-desc">Incorporar distribuições estatísticas (Poisson, probabilidade), rankings e dados reais no design dos sistemas de jogo.</div>
+      </div>
+
+      <div class="obj-item" style="--obj-color: var(--c-accent1)">
+        <div class="obj-icon">🚀</div>
+        <div class="obj-title">Prototipação real</div>
+        <div class="obj-desc">Levar os estudantes além da teoria — documentar e planejar jogos funcionais com sistemas, UI e progressão detalhados.</div>
+      </div>
+
+      <div class="obj-item" style="--obj-color: var(--c-accent2)">
+        <div class="obj-icon">🎓</div>
+        <div class="obj-title">Extensão universitária</div>
+        <div class="obj-desc">Conectar a universidade com a comunidade jovem através de produtos culturais e educativos acessíveis e divertidos.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- JOGOS -->
+<section id="jogos">
+  <div class="container">
+    <div class="games-header">
+      <div>
+        <p class="section-label">Portfólio</p>
+        <h2 class="section-title">Os quatro jogos</h2>
+        <div class="divider"></div>
+        <p class="section-desc">Cada equipe criou um GDD completo e projetou sistemas únicos que integram o conteúdo acadêmico ao entretenimento.</p>
+      </div>
+    </div>
+
+    <div class="games-grid">
+
+      <!-- JOGO 1: I Love Eating Trash -->
+      <div class="game-card" style="--gc-bg: #0f2318; --gc-accent: #6ee7b7; --gc-emoji: '🌿'">
+        <div class="game-card-header">
+          <div class="game-tag">Ambiental · Casual · Educativo</div>
+          <div class="game-title">I Love Eating Trash</div>
+          <div class="game-genre">Aventura / Casual / Educativo</div>
+        </div>
+        <div class="game-body">
+          <p class="game-pitch">
+            Uma bola feita de lixo cresce absorvendo resíduos pelo mundo — de objetos domésticos até detritos espaciais. O jogador restaura a Terra enquanto aprende sobre impacto ambiental de forma visualmente gratificante.
+          </p>
+          <div class="game-features">
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #6ee7b7"></div>
+              <p class="feature-text"><strong>Mudança de escala dinâmica</strong> — formiga → humano → cidade → planeta → órbita espacial, com transições fluidas entre ambientes.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #6ee7b7"></div>
+              <p class="feature-text"><strong>Geração Poisson de lixo</strong> — indústrias poluentes geram resíduos periodicamente conforme distribuição estatística parametrizada por λ.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #6ee7b7"></div>
+              <p class="feature-text"><strong>Modo multiplayer agar.io 3D</strong> — jogadores competem absorvendo objetos e uns aos outros em ritmo acelerado.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #6ee7b7"></div>
+              <p class="feature-text"><strong>Dados reais integrados</strong> — estatísticas sobre toneladas de lixo oceânico exibidas em tempo real como métrica educativa.</p>
+            </div>
+          </div>
+        </div>
+        <div class="game-footer">
+          <span class="pill"><span class="pill-icon">🎨</span> Cartoonish & Colorido</span>
+          <span class="pill"><span class="pill-icon">🗺️</span> 8 ambientes</span>
+          <span class="pill"><span class="pill-icon">🏆</span> Ranking global</span>
+          <span class="pill"><span class="pill-icon">⬆️</span> Upgrades de habilidade</span>
+        </div>
+      </div>
+
+      <!-- JOGO 2: Final Class -->
+      <div class="game-card" style="--gc-bg: #1a0f1a; --gc-accent: #f472b6; --gc-emoji: '👻'">
+        <div class="game-card-header">
+          <div class="game-tag">Terror · Educativo · Escape Room</div>
+          <div class="game-title">Final Class</div>
+          <div class="game-genre">Educativo / Escape Room / Terror</div>
+        </div>
+        <div class="game-body">
+          <p class="game-pitch">
+            Um aluno retorna à sua escola numa reunião de 10 anos e é arrastado para uma versão distorcida do colégio pelo fantasma de um professor rígido. Para escapar, deve resolver enigmas de estatística e probabilidade.
+          </p>
+          <div class="game-features">
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #f472b6"></div>
+              <p class="feature-text"><strong>Problema de Monty Hall</strong> — biblioteca com três portas; feedback matemático sobre probabilidade (2/3 vs 1/3) ao escolher.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #f472b6"></div>
+              <p class="feature-text"><strong>Puzzle de lógica binária</strong> — 4 botões alteram estados de luzes; conceitos de eventos independentes e probabilidade uniforme.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #f472b6"></div>
+              <p class="feature-text"><strong>Cofre com moda, mediana e média</strong> — o jogador coleta dicas do ambiente para descobrir os 4 dígitos da senha usando medidas estatísticas.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #f472b6"></div>
+              <p class="feature-text"><strong>Sistema de timer e esconderijo</strong> — erros reduzem o timer em 15s e avisam que o monstro se aproxima; o jogador pode se esconder.</p>
+            </div>
+          </div>
+        </div>
+        <div class="game-footer">
+          <span class="pill"><span class="pill-icon">🏫</span> Escola abandonada</span>
+          <span class="pill"><span class="pill-icon">💀</span> Boss Fight final</span>
+          <span class="pill"><span class="pill-icon">❤️</span> 3 vidas</span>
+          <span class="pill"><span class="pill-icon">🔦</span> Estilo PS2/Cartoon</span>
+        </div>
+      </div>
+
+      <!-- JOGO 3: UFES RPG Online -->
+      <div class="game-card" style="--gc-bg: #101a27; --gc-accent: #818cf8; --gc-emoji: '⚔️'">
+        <div class="game-card-header">
+          <div class="game-tag">RPG · Aventura · Identidade</div>
+          <div class="game-title">UFES: RPG Online</div>
+          <div class="game-genre">RPG de Ação com Mapa da UFES</div>
+        </div>
+        <div class="game-body">
+          <p class="game-pitch">
+            Um RPG ambientado no campus Goiabeiras da UFES. O jogador começa como calouro, derrota inimigos temáticos, ganha experiência e sobe de nível — onde o conhecimento é literalmente poder.
+          </p>
+          <div class="game-features">
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #818cf8"></div>
+              <p class="feature-text"><strong>Mapa fiel ao campus</strong> — floresta, lago, biblioteca, prédios acadêmicos e RU recriados em estilo PixelArt Voxel.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #818cf8"></div>
+              <p class="feature-text"><strong>Combate livre em tempo real</strong> — aproximação aciona o agro do inimigo; progressão de nível melhora vida, velocidade e dano.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #818cf8"></div>
+              <p class="feature-text"><strong>Sistema de missões</strong> — caça ("Elimine a cobra do CT") e coleta ("Ingredientes para o RU") com recompensas em itens e ouro.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #818cf8"></div>
+              <p class="feature-text"><strong>Economia de três camadas</strong> — ouro, moeda especial e upgrades de inventário; loja com armas e armaduras.</p>
+            </div>
+          </div>
+        </div>
+        <div class="game-footer">
+          <span class="pill"><span class="pill-icon">🎓</span> Tema universitário</span>
+          <span class="pill"><span class="pill-icon">🧊</span> PixelArt Voxel</span>
+          <span class="pill"><span class="pill-icon">🎒</span> Inventário gerenciável</span>
+          <span class="pill"><span class="pill-icon">🛒</span> Loja de itens</span>
+        </div>
+      </div>
+
+      <!-- JOGO 4: Life Factory Tycoon -->
+      <div class="game-card" style="--gc-bg: #1a1507; --gc-accent: #fbbf24; --gc-emoji: '🍼'">
+        <div class="game-card-header">
+          <div class="game-tag">Tycoon · Incremental · Gestão</div>
+          <div class="game-title">Life Factory Tycoon</div>
+          <div class="game-genre">Tycoon / Incremental — Ciclo de Vida</div>
+        </div>
+        <div class="game-body">
+          <p class="game-pitch">
+            O jogador constrói e gerencia um império que guia personagens pelas fases da vida — do berçário à escola. Compra Droppers, instala esteiras, desbloqueia Instituições e reinveste para escalar a operação.
+          </p>
+          <div class="game-features">
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #fbbf24"></div>
+              <p class="feature-text"><strong>Core loop de 4 etapas</strong> — Gerar → Desenvolver → Ganhar → Reinvestir, com escalonamento de renda por segundo.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #fbbf24"></div>
+              <p class="feature-text"><strong>Droppers e Upgraders</strong> — geradores atualizáveis e plataformas de multiplicação de valor; velocidade das esteiras afeta o ganho médio.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #fbbf24"></div>
+              <p class="feature-text"><strong>Progressão por fases de vida</strong> — Maternidade → Berçário → Jardim de Infância → Escola, cada fase mais lucrativa.</p>
+            </div>
+            <div class="feature-row">
+              <div class="feature-dot" style="background: #fbbf24"></div>
+              <p class="feature-text"><strong>Gerentes e variantes</strong> — automatize com gerentes passivos e desbloqueie variantes como "Bebê Gênio" com valor base aumentado.</p>
+            </div>
+          </div>
+        </div>
+        <div class="game-footer">
+          <span class="pill"><span class="pill-icon">👶</span> Ciclo de vida</span>
+          <span class="pill"><span class="pill-icon">🏭</span> Até 8 jogadores/servidor</span>
+          <span class="pill"><span class="pill-icon">🎨</span> Estilo cartunesco</span>
+          <span class="pill"><span class="pill-icon">📈</span> Renda por segundo</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGIA -->
+<section id="metodologia">
+  <div class="container">
+    <p class="section-label">Como foi feito</p>
+    <h2 class="section-title">Metodologia do projeto</h2>
+    <div class="divider"></div>
+
+    <div class="method-grid">
+      <div class="method-steps">
+
+        <div class="method-step">
+          <div class="step-line">
+            <div class="step-num">1</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Formação das equipes</div>
+            <div class="step-desc">Estudantes foram organizados em grupos multidisciplinares, cada um responsável por conceber um jogo do zero com tema e mecânicas próprias.</div>
+          </div>
+        </div>
+
+        <div class="method-step">
+          <div class="step-line">
+            <div class="step-num">2</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Elaboração do GDD</div>
+            <div class="step-desc">Cada equipe produziu um Game Design Document completo, detalhando core loop, sistemas, progressão, arte, UI e contexto narrativo.</div>
+          </div>
+        </div>
+
+        <div class="method-step">
+          <div class="step-line">
+            <div class="step-num">3</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Integração de conteúdo estatístico</div>
+            <div class="step-desc">Os sistemas de jogo foram projetados para incorporar conceitos como distribuição de Poisson, Monty Hall, moda, mediana e média diretamente nas mecânicas.</div>
+          </div>
+        </div>
+
+        <div class="method-step">
+          <div class="step-line">
+            <div class="step-num">4</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Desenvolvimento na plataforma Roblox</div>
+            <div class="step-desc">Utilizando as ferramentas nativas do Roblox Studio, os grupos implementaram protótipos jogáveis com os sistemas documentados.</div>
+          </div>
+        </div>
+
+        <div class="method-step">
+          <div class="step-line">
+            <div class="step-num">5</div>
+            <div class="step-connector"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-title">Apresentação e avaliação</div>
+            <div class="step-desc">Os projetos foram apresentados, avaliados quanto à coerência do design, aplicação dos conceitos e qualidade da documentação produzida.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+        <div class="method-note">
+          <h4>Por que Roblox?</h4>
+          <p>A plataforma Roblox oferece um ambiente acessível e familiar ao público jovem, com ferramentas de scripting em Lua e publicação instantânea para uma base de milhões de jogadores.</p>
+          <p>Isso permite que estudantes criem experiências reais — não apenas simulações — e vejam seu trabalho ter impacto imediato em uma audiência genuína.</p>
+          <p>A limitação tecnológica não é um obstáculo, mas um estímulo à criatividade dentro de um escopo gerenciável para um projeto de extensão.</p>
+        </div>
+
+        <div class="method-note" style="margin-top: 1.5rem; border-left-color: var(--c-accent2);">
+          <h4 style="color: var(--c-accent2);">Estatística aplicada ao design</h4>
+          <p>Um diferencial do GameLab é exigir que os sistemas de jogo tenham fundamento matemático. A distribuição de Poisson no I Love Eating Trash, os puzzles probabilísticos no Final Class e as métricas de progressão no Life Factory Tycoon são exemplos diretos de currículo acadêmico convertido em diversão.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTADOS -->
+<section id="resultados">
+  <div class="container">
+    <p class="section-label">Impacto</p>
+    <h2 class="section-title">Resultados e aprendizados</h2>
+    <div class="divider"></div>
+
+    <div class="results-grid">
+
+      <div class="result-card">
+        <div class="result-icon">📄</div>
+        <div class="result-title">4 GDDs completos</div>
+        <div class="result-desc">Cada equipe entregou um documento de design robusto cobrindo gameplay, sistemas, arte, UI, narrativa e progressão.</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-icon">📊</div>
+        <div class="result-title">Estatística em ação</div>
+        <div class="result-desc">Conceitos como Poisson, Monty Hall, moda e mediana foram convertidos em mecânicas reais e jogáveis.</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-icon">🌱</div>
+        <div class="result-title">Tema ambiental</div>
+        <div class="result-desc">O I Love Eating Trash integra dados reais sobre poluição, conscientizando jogadores enquanto entretém.</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-icon">🏫</div>
+        <div class="result-title">Identidade UFES</div>
+        <div class="result-desc">O UFES RPG Online recriou digitalmente o campus Goiabeiras, criando pertencimento e conexão com a instituição.</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-icon">🧠</div>
+        <div class="result-title">Pensamento sistêmico</div>
+        <div class="result-desc">Os estudantes desenvolveram a capacidade de pensar em loops de feedback, balanceamento e progressão — habilidades transferíveis.</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-icon">🎯</div>
+        <div class="result-title">Produtos reais</div>
+        <div class="result-desc">O projeto resultou em protótipos publicáveis no Roblox — experiências que podem alcançar uma audiência de milhões de jogadores jovens.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">GameLab</div>
+  <p class="footer-text">Projeto de Extensão · Universidade Federal do Espírito Santo · 2025</p>
+  <p class="footer-text" style="margin-top:0.4rem">Desenvolvido com criatividade, estatística e muito lixo espacial 🚀</p>
+  <div class="footer-links">
+    <a href="#sobre">Sobre</a>
+    <a href="#objetivos">Objetivos</a>
+    <a href="#jogos">Os Jogos</a>
+    <a href="#metodologia">Metodologia</a>
+    <a href="#resultados">Resultados</a>
+  </div>
+</footer>
+
+</body>
+</html>
