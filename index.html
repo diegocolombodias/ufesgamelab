@@ -4,26 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GameLab — Projeto de Extensão</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+  
   <style>
     /* ── Reset & Base ─────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --c-bg:        #0b0f1a;
-      --c-surface:   #111827;
-      --c-card:      #161d2e;
-      --c-border:    rgba(255,255,255,0.07);
-      --c-text:      #e2e8f0;
-      --c-muted:     #8494a8;
-      --c-accent1:   #6ee7b7;   /* verde jade */
-      --c-accent2:   #818cf8;   /* índigo */
-      --c-accent3:   #f472b6;   /* rosa */
-      --c-accent4:   #fbbf24;   /* âmbar */
-      --r-card:      16px;
-      --font-head:   'Syne', sans-serif;
-      --font-body:   'DM Sans', sans-serif;
+      --c-bg:        #000000; /* Pure black background */
+      --c-surface:   #0a0a0a; /* Slightly lighter for sections */
+      --c-card:      #0000a8; /* Classic JRPG Menu Blue */
+      --c-border:    #ffffff; /* White dialogue borders */
+      --c-text:      #ffffff;
+      --c-muted:     #cccccc;
+      --c-accent1:   #f8b800; /* Coin Gold */
+      --c-accent2:   #f83800; /* HP Red */
+      --c-accent3:   #00f838; /* Stamina Green */
+      --c-accent4:   #0088f8; /* MP Blue */
+      --r-card:      0px;     /* Sharp, blocky corners */
+      --font-head:   'Press Start 2P', system-ui; /* Blocky title font */
+      --font-body:   'VT323', monospace;          /* Readable pixel text */
     }
 
     html { scroll-behavior: smooth; }
@@ -32,9 +34,17 @@
       background: var(--c-bg);
       color: var(--c-text);
       font-family: var(--font-body);
-      font-size: 16px;
-      line-height: 1.7;
+      font-size: 22px; 
+      line-height: 1.5;
       overflow-x: hidden;
+      text-shadow: 2px 2px 0px #000;
+      /* 8-bit Custom Cursor - Default White */
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' stroke='%23000000' stroke-width='2' d='M2 2l14 6-5.5 2L15 16l-3 2-4.5-6L2 17z' style='image-rendering: pixelated;'/%3E%3C/svg%3E"), auto;
+    }
+
+    /* 8-bit Custom Cursor - Hover Gold */
+    a, button, .obj-item, .game-card, .team-card, .result-card {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23f8b800' stroke='%23000000' stroke-width='2' d='M2 2l14 6-5.5 2L15 16l-3 2-4.5-6L2 17z' style='image-rendering: pixelated;'/%3E%3C/svg%3E"), pointer !important;
     }
 
     /* ── Noise grain overlay ──────────────────────────────── */
@@ -61,50 +71,30 @@
       overflow: hidden;
     }
 
-    .hero-glow {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(120px);
-      pointer-events: none;
-    }
-    .hero-glow-1 {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(110,231,183,0.18) 0%, transparent 70%);
-      top: -100px; left: -150px;
-      animation: drift1 12s ease-in-out infinite alternate;
-    }
-    .hero-glow-2 {
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(129,140,248,0.16) 0%, transparent 70%);
-      bottom: -80px; right: -120px;
-      animation: drift2 15s ease-in-out infinite alternate;
-    }
-
-    @keyframes drift1 { from { transform: translate(0,0); } to { transform: translate(60px,40px); } }
-    @keyframes drift2 { from { transform: translate(0,0); } to { transform: translate(-50px,-30px); } }
-
     .hero-badge {
       display: inline-block;
-      font-family: var(--font-head);
-      font-size: 0.75rem;
+      font-family: var(--font-body);
+      font-size: 1.1rem;
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--c-accent1);
-      border: 1px solid rgba(110,231,183,0.3);
+      border: 2px solid var(--c-border);
+      background: #000;
       padding: 0.35rem 1rem;
-      border-radius: 100px;
+      border-radius: 0;
       margin-bottom: 1.5rem;
-      backdrop-filter: blur(8px);
+      text-shadow: none;
       animation: fadeUp 0.8s ease both;
     }
 
     .hero-title {
       font-family: var(--font-head);
-      font-size: clamp(3rem, 9vw, 7rem);
+      font-size: clamp(1.8rem, 5vw, 4rem);
       font-weight: 800;
-      line-height: 1;
+      line-height: 1.3;
       letter-spacing: -0.03em;
+      text-shadow: 4px 4px 0px #000, 8px 8px 0px var(--c-card);
       animation: fadeUp 0.9s 0.1s ease both;
     }
 
@@ -112,15 +102,12 @@
       color: var(--c-text);
     }
     .hero-title .word-lab {
-      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--c-accent1);
     }
 
     .hero-subtitle {
       margin-top: 1.5rem;
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-size: clamp(1.2rem, 2.5vw, 1.5rem);
       color: var(--c-muted);
       max-width: 620px;
       font-weight: 300;
@@ -140,12 +127,12 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      font-size: 0.875rem;
+      font-size: 1.1rem;
       color: var(--c-muted);
     }
     .hero-meta-item .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
+      width: 10px; height: 10px;
+      border: 1px solid #000;
       background: var(--c-accent1);
       flex-shrink: 0;
     }
@@ -160,13 +147,13 @@
       align-items: center;
       gap: 0.5rem;
       color: var(--c-muted);
-      font-size: 0.75rem;
+      font-size: 1rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       animation: fadeUp 1s 0.5s ease both;
     }
     .scroll-line {
-      width: 1px;
+      width: 4px;
       height: 40px;
       background: linear-gradient(to bottom, var(--c-muted), transparent);
       animation: scrollPulse 2s ease-in-out infinite;
@@ -190,28 +177,26 @@
 
     .section-label {
       font-family: var(--font-head);
-      font-size: 0.7rem;
-      font-weight: 700;
+      font-size: 0.8rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--c-accent2);
+      color: var(--c-accent1);
       margin-bottom: 0.75rem;
+      text-shadow: 2px 2px 0px #000;
     }
 
     .section-title {
       font-family: var(--font-head);
-      font-size: clamp(2rem, 5vw, 3.25rem);
-      font-weight: 800;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      line-height: 1.4;
+      text-shadow: 3px 3px 0px #000;
     }
 
     .section-desc {
       margin-top: 1rem;
       color: var(--c-muted);
       max-width: 580px;
-      font-size: 1.05rem;
-      font-weight: 300;
+      font-size: 1.2rem;
     }
 
     /* ── About ────────────────────────────────────────────── */
@@ -230,12 +215,9 @@
     .about-text p {
       color: var(--c-muted);
       margin-bottom: 1.2rem;
-      font-weight: 300;
-      font-size: 1.05rem;
     }
     .about-text p strong {
       color: var(--c-text);
-      font-weight: 500;
     }
 
     .about-stats {
@@ -244,31 +226,31 @@
       gap: 1.25rem;
     }
 
-    .stat-card {
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-card);
+    /* Classic RPG Menu Box Effect */
+    .stat-card, .obj-item, .game-card, .method-note, .result-card, .team-card {
+      background: var(--c-card) !important;
+      border: 4px solid var(--c-border) !important;
+      box-shadow: inset 0 0 0 4px #000, 8px 8px 0px rgba(0,0,0,0.8) !important;
+      border-radius: 0 !important;
       padding: 1.5rem;
-      transition: border-color 0.3s;
+      transition: transform 0.2s;
     }
-    .stat-card:hover { border-color: rgba(110,231,183,0.25); }
+    
+    .obj-item:hover, .game-card:hover, .result-card:hover, .team-card:hover {
+      transform: translateY(-4px) translateX(-4px);
+      box-shadow: inset 0 0 0 4px #000, 12px 12px 0px rgba(0,0,0,0.8) !important;
+    }
 
     .stat-number {
       font-family: var(--font-head);
-      font-size: 2.5rem;
-      font-weight: 800;
-      line-height: 1;
-      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 2rem;
+      color: var(--c-accent1);
+      margin-bottom: 0.5rem;
     }
 
     .stat-label {
-      margin-top: 0.4rem;
-      font-size: 0.85rem;
-      color: var(--c-muted);
-      letter-spacing: 0.02em;
+      font-size: 1.1rem;
+      color: var(--c-text);
     }
 
     /* ── Objectives ───────────────────────────────────────── */
@@ -283,42 +265,20 @@
       gap: 1.5rem;
     }
 
-    .obj-item {
-      position: relative;
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-card);
-      padding: 2rem 1.75rem;
-      transition: transform 0.3s, border-color 0.3s;
-      overflow: hidden;
-    }
-    .obj-item::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--obj-color, var(--c-accent1));
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    .obj-item:hover { transform: translateY(-4px); }
-    .obj-item:hover::before { opacity: 1; }
-    .obj-item:hover { border-color: rgba(255,255,255,0.15); }
-
     .obj-icon {
       font-size: 2rem;
       margin-bottom: 1rem;
     }
     .obj-title {
       font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: var(--c-accent1);
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
     }
     .obj-desc {
-      font-size: 0.9rem;
-      color: var(--c-muted);
-      font-weight: 300;
+      font-size: 1.1rem;
+      color: var(--c-text);
     }
 
     /* ── Games ────────────────────────────────────────────── */
@@ -338,82 +298,69 @@
     .games-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-      gap: 2rem;
+      gap: 2.5rem;
     }
 
     .game-card {
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-radius: 20px;
-      overflow: hidden;
-      transition: transform 0.35s, box-shadow 0.35s;
       display: flex;
       flex-direction: column;
-    }
-    .game-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+      padding: 0 !important;
     }
 
     .game-card-header {
+      padding: 2rem 1.5rem;
+      border-bottom: 4px solid var(--c-border);
       position: relative;
-      padding: 2.5rem 2rem 1.5rem;
-      background: var(--gc-bg, #1a2035);
       overflow: hidden;
     }
+    
     .game-card-header::after {
       content: var(--gc-emoji);
       position: absolute;
       right: 1.5rem;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 5rem;
-      opacity: 0.18;
-      line-height: 1;
+      font-size: 4rem;
+      opacity: 0.3;
       pointer-events: none;
     }
 
     .game-tag {
       display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 0.25rem 0.75rem;
-      border-radius: 100px;
-      background: rgba(255,255,255,0.1);
-      color: var(--gc-accent, var(--c-accent1));
-      border: 1px solid var(--gc-accent, var(--c-accent1));
-      margin-bottom: 0.75rem;
-      mix-blend-mode: screen;
+      background: #000 !important;
+      color: var(--c-accent1) !important;
+      border: 2px solid var(--c-border);
+      margin-bottom: 1rem;
+      text-shadow: none;
     }
 
     .game-title {
       font-family: var(--font-head);
-      font-size: 1.6rem;
-      font-weight: 800;
-      line-height: 1.15;
+      font-size: 1.3rem;
+      line-height: 1.3;
       color: var(--c-text);
     }
 
     .game-genre {
-      margin-top: 0.35rem;
-      font-size: 0.85rem;
-      color: var(--gc-accent, var(--c-accent1));
-      font-weight: 500;
+      margin-top: 0.5rem;
+      font-size: 1.1rem;
+      color: var(--c-muted);
     }
 
     .game-body {
-      padding: 1.75rem 2rem;
+      padding: 1.5rem;
       flex: 1;
     }
 
     .game-pitch {
-      font-size: 0.95rem;
-      color: var(--c-muted);
-      font-weight: 300;
+      font-size: 1.2rem;
+      color: var(--c-text);
       margin-bottom: 1.5rem;
-      line-height: 1.65;
     }
 
     .game-features {
@@ -429,26 +376,24 @@
     }
 
     .feature-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--gc-accent, var(--c-accent1));
+      width: 10px; height: 10px;
+      background: var(--c-accent1) !important;
+      border: 2px solid #000;
       flex-shrink: 0;
       margin-top: 0.5rem;
     }
 
     .feature-text {
-      font-size: 0.875rem;
+      font-size: 1.1rem;
       color: var(--c-muted);
-      font-weight: 300;
     }
     .feature-text strong {
       color: var(--c-text);
-      font-weight: 500;
     }
 
     .game-footer {
-      padding: 1.25rem 2rem;
-      border-top: 1px solid var(--c-border);
+      padding: 1.25rem 1.5rem;
+      border-top: 4px solid var(--c-border);
       display: flex;
       gap: 0.75rem;
       flex-wrap: wrap;
@@ -458,14 +403,14 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.75rem;
-      color: var(--c-muted);
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--c-border);
-      border-radius: 100px;
-      padding: 0.3rem 0.8rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      background: #000 !important;
+      color: var(--c-text) !important;
+      border: 2px solid var(--c-border);
+      padding: 0.2rem 0.6rem;
+      text-shadow: none;
     }
-    .pill-icon { font-size: 0.85rem; }
 
     /* ── Methodology ──────────────────────────────────────── */
     #metodologia {
@@ -497,26 +442,27 @@
       align-items: center;
       flex-shrink: 0;
     }
+    
     .step-num {
-      width: 36px; height: 36px;
-      border-radius: 50%;
-      border: 2px solid var(--c-accent2);
+      width: 44px; height: 44px;
+      background: var(--c-card);
+      border: 4px solid var(--c-border);
+      box-shadow: inset 0 0 0 2px #000;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-head);
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--c-accent2);
+      font-size: 1rem;
+      color: var(--c-text);
       flex-shrink: 0;
     }
+    
     .step-connector {
-      width: 2px;
+      width: 4px;
       flex: 1;
-      background: linear-gradient(to bottom, var(--c-accent2), transparent);
+      background: var(--c-border);
       min-height: 40px;
       margin: 4px 0;
-      opacity: 0.3;
     }
     .method-step:last-child .step-connector { display: none; }
 
@@ -525,34 +471,28 @@
     }
     .step-title {
       font-family: var(--font-head);
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
+      font-size: 0.9rem;
+      color: var(--c-accent1);
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
     }
     .step-desc {
-      font-size: 0.875rem;
-      color: var(--c-muted);
-      font-weight: 300;
+      font-size: 1.1rem;
+      color: var(--c-text);
     }
 
     .method-note {
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-left: 3px solid var(--c-accent1);
-      border-radius: var(--r-card);
-      padding: 2rem;
+      margin-bottom: 1.5rem;
     }
     .method-note h4 {
       font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
+      font-size: 1rem;
       color: var(--c-accent1);
+      margin-bottom: 1rem;
     }
     .method-note p {
-      font-size: 0.9rem;
-      color: var(--c-muted);
-      font-weight: 300;
+      font-size: 1.1rem;
+      color: var(--c-text);
       margin-bottom: 0.9rem;
     }
     .method-note p:last-child { margin-bottom: 0; }
@@ -569,122 +509,17 @@
       margin-top: 3.5rem;
     }
 
-    .result-card {
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-card);
-      padding: 1.75rem;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .result-card:hover {
-      border-color: rgba(129,140,248,0.3);
-      transform: translateY(-3px);
-    }
-
-    .result-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .result-icon { font-size: 2rem; margin-bottom: 1rem; }
     .result-title {
       font-family: var(--font-head);
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--c-accent1);
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
     }
     .result-desc {
-      font-size: 0.875rem;
-      color: var(--c-muted);
-      font-weight: 300;
-    }
-
-    /* ── Footer ───────────────────────────────────────────── */
-    footer {
-      background: var(--c-bg);
-      border-top: 1px solid var(--c-border);
-      padding: 3rem 2rem;
-      text-align: center;
-    }
-
-    .footer-logo {
-      font-family: var(--font-head);
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-text {
-      font-size: 0.85rem;
-      color: var(--c-muted);
-      font-weight: 300;
-    }
-
-    .footer-links {
-      margin-top: 1.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .footer-links a {
-      font-size: 0.85rem;
-      color: var(--c-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--c-accent1); }
-
-    /* ── Nav ──────────────────────────────────────────────── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      backdrop-filter: blur(20px);
-      background: rgba(11,15,26,0.8);
-      border-bottom: 1px solid var(--c-border);
-    }
-
-    .nav-logo {
-      font-family: var(--font-head);
       font-size: 1.1rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-decoration: none;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: 0.875rem;
-      color: var(--c-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-      font-weight: 400;
-    }
-    .nav-links a:hover { color: var(--c-text); }
-
-    /* ── Utilities ────────────────────────────────────────── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .divider {
-      width: 48px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--c-accent1), var(--c-accent2));
-      border-radius: 100px;
-      margin: 1.5rem 0;
+      color: var(--c-text);
     }
 
     /* ── Team ─────────────────────────────────────────────── */
@@ -700,63 +535,133 @@
     }
 
     .team-card {
-      background: var(--c-card);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-card);
-      padding: 1.75rem 1.5rem;
       text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-    .team-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(129,140,248,0.3);
     }
 
     .team-avatar {
-      width: 64px; height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--c-accent2), var(--c-accent1));
+      width: 72px; height: 72px;
+      background: var(--c-bg);
+      border: 4px solid var(--c-border);
+      box-shadow: inset 0 0 0 2px #000;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-head);
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: var(--c-bg);
-      margin: 0 auto 1rem;
+      font-size: 1.2rem;
+      color: var(--c-accent1);
+      margin: 0 auto 1.5rem;
       flex-shrink: 0;
     }
 
     .team-name {
       font-family: var(--font-head);
-      font-size: 0.95rem;
-      font-weight: 700;
-      line-height: 1.3;
-      margin-bottom: 0.4rem;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin-bottom: 1rem;
     }
 
     .team-role {
       display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-family: var(--font-body);
+      font-size: 1rem;
       text-transform: uppercase;
       padding: 0.2rem 0.7rem;
-      border-radius: 100px;
-      background: rgba(129,140,248,0.12);
-      color: var(--c-accent2);
-      border: 1px solid rgba(129,140,248,0.25);
+      background: #000 !important;
+      color: var(--c-accent1) !important;
+      border: 2px solid var(--c-border);
+      text-shadow: none;
     }
 
     .team-card.coord .team-avatar {
-      background: linear-gradient(135deg, var(--c-accent1), var(--c-accent2));
-      width: 76px; height: 76px;
-      font-size: 1.6rem;
+      color: var(--c-accent2);
+      width: 84px; height: 84px;
+      font-size: 1.4rem;
     }
-    .team-card.coord .team-role {
-      background: rgba(110,231,183,0.12);
+
+    /* ── Footer ───────────────────────────────────────────── */
+    footer {
+      background: var(--c-bg);
+      border-top: 4px solid var(--c-border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
       color: var(--c-accent1);
-      border-color: rgba(110,231,183,0.25);
+      margin-bottom: 1rem;
+    }
+
+    .footer-text {
+      font-size: 1.1rem;
+      color: var(--c-muted);
+    }
+
+    .footer-links {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      font-family: var(--font-head);
+      font-size: 0.8rem;
+      color: var(--c-text);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--c-accent1); }
+
+    /* ── Nav ──────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--c-card);
+      border-bottom: 4px solid var(--c-border);
+      box-shadow: inset 0 0 0 3px #000;
+    }
+
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      color: var(--c-accent1);
+      text-decoration: none;
+      text-shadow: 2px 2px 0px #000;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      font-family: var(--font-head);
+      font-size: 0.7rem;
+      color: var(--c-text);
+      text-decoration: none;
+      text-shadow: none;
+    }
+    .nav-links a:hover { color: var(--c-accent1); }
+
+    /* ── Utilities ────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .divider {
+      width: 64px;
+      height: 4px;
+      background: var(--c-border);
+      margin: 1.5rem 0;
     }
 
     /* ── Responsive ───────────────────────────────────────── */
@@ -771,7 +676,7 @@
 
     @media (max-width: 600px) {
       .results-grid { grid-template-columns: 1fr; }
-      .about-stats { grid-template-columns: 1fr 1fr; }
+      .about-stats { grid-template-columns: 1fr; }
       section { padding: 4rem 0; }
       .nav-links { display: none; }
     }
@@ -779,7 +684,6 @@
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a class="nav-logo" href="#">GameLab</a>
   <ul class="nav-links">
@@ -792,12 +696,8 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-glow hero-glow-1"></div>
-  <div class="hero-glow hero-glow-2"></div>
-
-  <div class="hero-badge">Projeto de Extensão · UFES · 2025</div>
+  <div class="hero-badge">LVL 1 · UFES · 2025</div>
 
   <h1 class="hero-title">
     <span class="word-game">Game</span><span class="word-lab">Lab</span>
@@ -808,19 +708,17 @@
   </p>
 
   <div class="hero-meta">
-    <div class="hero-meta-item"><span class="dot"></span> Universidade Federal do Espírito Santo</div>
-    <div class="hero-meta-item"><span class="dot"></span> 4 equipes multidisciplinares</div>
-    <div class="hero-meta-item"><span class="dot"></span> Plataforma Roblox</div>
-    <div class="hero-meta-item"><span class="dot"></span> Público jovem</div>
+    <div class="hero-meta-item"><span class="dot"></span> UFES Base</div>
+    <div class="hero-meta-item"><span class="dot"></span> Party: 4 Teams</div>
+    <div class="hero-meta-item"><span class="dot"></span> Engine: Roblox</div>
   </div>
 
   <div class="scroll-hint">
-    <span>Rolar</span>
+    <span>[ PRESS START TO SCROLL ]</span>
     <div class="scroll-line"></div>
   </div>
 </section>
 
-<!-- SOBRE -->
 <section id="sobre">
   <div class="container">
     <p class="section-label">O Projeto</p>
@@ -851,229 +749,183 @@
         </div>
         <div class="stat-card">
           <div class="stat-number">GDD</div>
-          <div class="stat-label">Documentação completa por equipe</div>
+          <div class="stat-label">Documentos completos</div>
         </div>
         <div class="stat-card">
           <div class="stat-number">UFES</div>
-          <div class="stat-label">Extensão universitária</div>
+          <div class="stat-label">Extensão Univ.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- OBJETIVOS -->
 <section id="objetivos">
   <div class="container">
     <p class="section-label">Propósito</p>
-    <h2 class="section-title">O que o GameLab<br />busca alcançar</h2>
+    <h2 class="section-title">Missões Principais</h2>
     <div class="divider"></div>
 
     <div class="obj-list">
 
-      <div class="obj-item" style="--obj-color: var(--c-accent1)">
+      <div class="obj-item">
         <div class="obj-icon">🎮</div>
         <div class="obj-title">Aprendizagem ativa</div>
-        <div class="obj-desc">Transformar conteúdos acadêmicos — estatística, lógica, probabilidade — em mecânicas de jogo tangíveis e engajantes.</div>
+        <div class="obj-desc">Transformar conteúdos acadêmicos em mecânicas de jogo tangíveis e engajantes.</div>
       </div>
 
-      <div class="obj-item" style="--obj-color: var(--c-accent2)">
+      <div class="obj-item">
         <div class="obj-icon">🤝</div>
         <div class="obj-title">Trabalho em equipe</div>
-        <div class="obj-desc">Estimular a colaboração multidisciplinar entre estudantes de diferentes perfis para construir produtos coesos e criativos.</div>
+        <div class="obj-desc">Estimular a colaboração multidisciplinar entre estudantes de diferentes perfis.</div>
       </div>
 
-      <div class="obj-item" style="--obj-color: var(--c-accent3)">
+      <div class="obj-item">
         <div class="obj-icon">🌍</div>
         <div class="obj-title">Impacto social</div>
-        <div class="obj-desc">Produzir jogos com temas relevantes: meio ambiente, educação matemática e conexão com a identidade universitária.</div>
+        <div class="obj-desc">Produzir jogos com temas relevantes: meio ambiente, educação e identidade.</div>
       </div>
 
-      <div class="obj-item" style="--obj-color: var(--c-accent4)">
+      <div class="obj-item">
         <div class="obj-icon">📐</div>
-        <div class="obj-title">Design orientado por dados</div>
-        <div class="obj-desc">Incorporar distribuições estatísticas (Poisson, probabilidade), rankings e dados reais no design dos sistemas de jogo.</div>
+        <div class="obj-title">Design guiado por dados</div>
+        <div class="obj-desc">Incorporar distribuições estatísticas e matemática no design dos sistemas.</div>
       </div>
 
-      <div class="obj-item" style="--obj-color: var(--c-accent1)">
+      <div class="obj-item">
         <div class="obj-icon">🚀</div>
         <div class="obj-title">Prototipação real</div>
-        <div class="obj-desc">Levar os estudantes além da teoria — documentar e planejar jogos funcionais com sistemas, UI e progressão detalhados.</div>
+        <div class="obj-desc">Levar os estudantes além da teoria documentando jogos funcionais.</div>
       </div>
 
-      <div class="obj-item" style="--obj-color: var(--c-accent2)">
+      <div class="obj-item">
         <div class="obj-icon">🎓</div>
         <div class="obj-title">Extensão universitária</div>
-        <div class="obj-desc">Conectar a universidade com a comunidade jovem através de produtos culturais e educativos acessíveis e divertidos.</div>
+        <div class="obj-desc">Conectar a universidade com a comunidade jovem através de produtos culturais.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- JOGOS -->
 <section id="jogos">
   <div class="container">
     <div class="games-header">
       <div>
-        <p class="section-label">Portfólio</p>
-        <h2 class="section-title">Os quatro jogos</h2>
+        <p class="section-label">Inventário</p>
+        <h2 class="section-title">Os Quatro Jogos</h2>
         <div class="divider"></div>
-        <p class="section-desc">Cada equipe criou um GDD completo e projetou sistemas únicos que integram o conteúdo acadêmico ao entretenimento.</p>
+        <p class="section-desc">Cada equipe projetou sistemas únicos que integram conteúdo acadêmico ao entretenimento.</p>
       </div>
     </div>
 
     <div class="games-grid">
 
-      <!-- JOGO 1: I Love Eating Trash -->
-      <div class="game-card" style="--gc-bg: #0f2318; --gc-accent: #6ee7b7; --gc-emoji: '🌿'">
+      <div class="game-card" style="--gc-emoji: '🌿'">
         <div class="game-card-header">
-          <div class="game-tag">Ambiental · Casual · Educativo</div>
+          <div class="game-tag">Quest 1</div>
           <div class="game-title">I Love Eating Trash</div>
           <div class="game-genre">Aventura / Casual / Educativo</div>
         </div>
         <div class="game-body">
           <p class="game-pitch">
-            Uma bola feita de lixo cresce absorvendo resíduos pelo mundo — de objetos domésticos até detritos espaciais. O jogador restaura a Terra enquanto aprende sobre impacto ambiental de forma visualmente gratificante.
+            Uma bola feita de lixo cresce absorvendo resíduos pelo mundo — de objetos domésticos até detritos espaciais. O jogador restaura a Terra enquanto aprende sobre impacto ambiental.
           </p>
           <div class="game-features">
             <div class="feature-row">
-              <div class="feature-dot" style="background: #6ee7b7"></div>
-              <p class="feature-text"><strong>Mudança de escala dinâmica</strong> — formiga → humano → cidade → planeta → órbita espacial, com transições fluidas entre ambientes.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Mudança de escala dinâmica</strong> — formiga → humano → planeta.</p>
             </div>
             <div class="feature-row">
-              <div class="feature-dot" style="background: #6ee7b7"></div>
-              <p class="feature-text"><strong>Geração Poisson de lixo</strong> — indústrias poluentes geram resíduos periodicamente conforme distribuição estatística parametrizada por λ.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #6ee7b7"></div>
-              <p class="feature-text"><strong>Modo multiplayer agar.io 3D</strong> — jogadores competem absorvendo objetos e uns aos outros em ritmo acelerado.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #6ee7b7"></div>
-              <p class="feature-text"><strong>Dados reais integrados</strong> — estatísticas sobre toneladas de lixo oceânico exibidas em tempo real como métrica educativa.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Geração Poisson de lixo</strong> — resíduos baseados em distribuição estatística.</p>
             </div>
           </div>
         </div>
         <div class="game-footer">
-          <span class="pill"><span class="pill-icon">🎨</span> Cartoonish & Colorido</span>
-          <span class="pill"><span class="pill-icon">🗺️</span> 8 ambientes</span>
-          <span class="pill"><span class="pill-icon">🏆</span> Ranking global</span>
-          <span class="pill"><span class="pill-icon">⬆️</span> Upgrades de habilidade</span>
+          <span class="pill">🗺️ 8 ambientes</span>
+          <span class="pill">🏆 Ranking global</span>
         </div>
       </div>
 
-      <!-- JOGO 2: Final Class -->
-      <div class="game-card" style="--gc-bg: #1a0f1a; --gc-accent: #f472b6; --gc-emoji: '👻'">
+      <div class="game-card" style="--gc-emoji: '👻'">
         <div class="game-card-header">
-          <div class="game-tag">Terror · Educativo · Escape Room</div>
+          <div class="game-tag">Quest 2</div>
           <div class="game-title">Final Class</div>
           <div class="game-genre">Educativo / Escape Room / Terror</div>
         </div>
         <div class="game-body">
           <p class="game-pitch">
-            Um aluno retorna à sua escola numa reunião de 10 anos e é arrastado para uma versão distorcida do colégio pelo fantasma de um professor rígido. Para escapar, deve resolver enigmas de estatística e probabilidade.
+            Um aluno é arrastado para uma versão distorcida do colégio pelo fantasma de um professor. Para escapar, deve resolver enigmas de estatística e probabilidade.
           </p>
           <div class="game-features">
             <div class="feature-row">
-              <div class="feature-dot" style="background: #f472b6"></div>
-              <p class="feature-text"><strong>Problema de Monty Hall</strong> — biblioteca com três portas; feedback matemático sobre probabilidade (2/3 vs 1/3) ao escolher.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Problema de Monty Hall</strong> — portas probabilísticas ao escolher.</p>
             </div>
             <div class="feature-row">
-              <div class="feature-dot" style="background: #f472b6"></div>
-              <p class="feature-text"><strong>Puzzle de lógica binária</strong> — 4 botões alteram estados de luzes; conceitos de eventos independentes e probabilidade uniforme.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #f472b6"></div>
-              <p class="feature-text"><strong>Cofre com moda, mediana e média</strong> — o jogador coleta dicas do ambiente para descobrir os 4 dígitos da senha usando medidas estatísticas.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #f472b6"></div>
-              <p class="feature-text"><strong>Sistema de timer e esconderijo</strong> — erros reduzem o timer em 15s e avisam que o monstro se aproxima; o jogador pode se esconder.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Cofre estatístico</strong> — descobrir senhas usando moda, mediana e média.</p>
             </div>
           </div>
         </div>
         <div class="game-footer">
-          <span class="pill"><span class="pill-icon">🏫</span> Escola abandonada</span>
-          <span class="pill"><span class="pill-icon">💀</span> Boss Fight final</span>
-          <span class="pill"><span class="pill-icon">❤️</span> 3 vidas</span>
-          <span class="pill"><span class="pill-icon">🔦</span> Estilo PS2/Cartoon</span>
+          <span class="pill">💀 Boss Fight final</span>
+          <span class="pill">❤️ 3 vidas</span>
         </div>
       </div>
 
-      <!-- JOGO 3: UFES RPG Online -->
-      <div class="game-card" style="--gc-bg: #101a27; --gc-accent: #818cf8; --gc-emoji: '⚔️'">
+      <div class="game-card" style="--gc-emoji: '⚔️'">
         <div class="game-card-header">
-          <div class="game-tag">RPG · Aventura · Identidade</div>
+          <div class="game-tag">Quest 3</div>
           <div class="game-title">UFES: RPG Online</div>
           <div class="game-genre">RPG de Ação com Mapa da UFES</div>
         </div>
         <div class="game-body">
           <p class="game-pitch">
-            Um RPG ambientado no campus Goiabeiras da UFES. O jogador começa como calouro, derrota inimigos temáticos, ganha experiência e sobe de nível — onde o conhecimento é literalmente poder.
+            Um RPG ambientado no campus Goiabeiras da UFES. O jogador começa como calouro, derrota inimigos temáticos, ganha experiência e sobe de nível.
           </p>
           <div class="game-features">
             <div class="feature-row">
-              <div class="feature-dot" style="background: #818cf8"></div>
-              <p class="feature-text"><strong>Mapa fiel ao campus</strong> — floresta, lago, biblioteca, prédios acadêmicos e RU recriados em estilo PixelArt Voxel.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Mapa fiel ao campus</strong> — floresta, lago, RU recriados em Voxel.</p>
             </div>
             <div class="feature-row">
-              <div class="feature-dot" style="background: #818cf8"></div>
-              <p class="feature-text"><strong>Combate livre em tempo real</strong> — aproximação aciona o agro do inimigo; progressão de nível melhora vida, velocidade e dano.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #818cf8"></div>
-              <p class="feature-text"><strong>Sistema de missões</strong> — caça ("Elimine a cobra do CT") e coleta ("Ingredientes para o RU") com recompensas em itens e ouro.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #818cf8"></div>
-              <p class="feature-text"><strong>Economia de três camadas</strong> — ouro, moeda especial e upgrades de inventário; loja com armas e armaduras.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Combate em tempo real</strong> — progressão de nível melhora stats.</p>
             </div>
           </div>
         </div>
         <div class="game-footer">
-          <span class="pill"><span class="pill-icon">🎓</span> Tema universitário</span>
-          <span class="pill"><span class="pill-icon">🧊</span> PixelArt Voxel</span>
-          <span class="pill"><span class="pill-icon">🎒</span> Inventário gerenciável</span>
-          <span class="pill"><span class="pill-icon">🛒</span> Loja de itens</span>
+          <span class="pill">🎓 Tema universitário</span>
+          <span class="pill">🛒 Loja de itens</span>
         </div>
       </div>
 
-      <!-- JOGO 4: Life Factory Tycoon -->
-      <div class="game-card" style="--gc-bg: #1a1507; --gc-accent: #fbbf24; --gc-emoji: '🍼'">
+      <div class="game-card" style="--gc-emoji: '🍼'">
         <div class="game-card-header">
-          <div class="game-tag">Tycoon · Incremental · Gestão</div>
+          <div class="game-tag">Quest 4</div>
           <div class="game-title">Life Factory Tycoon</div>
           <div class="game-genre">Tycoon / Incremental — Ciclo de Vida</div>
         </div>
         <div class="game-body">
           <p class="game-pitch">
-            O jogador constrói e gerencia um império que guia personagens pelas fases da vida — do berçário à escola. Compra Droppers, instala esteiras, desbloqueia Instituições e reinveste para escalar a operação.
+            O jogador constrói e gerencia um império que guia personagens pelas fases da vida. Compra Droppers, instala esteiras e reinveste para escalar a operação.
           </p>
           <div class="game-features">
             <div class="feature-row">
-              <div class="feature-dot" style="background: #fbbf24"></div>
-              <p class="feature-text"><strong>Core loop de 4 etapas</strong> — Gerar → Desenvolver → Ganhar → Reinvestir, com escalonamento de renda por segundo.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Core loop de 4 etapas</strong> — Gerar → Desenvolver → Ganhar → Reinvestir.</p>
             </div>
             <div class="feature-row">
-              <div class="feature-dot" style="background: #fbbf24"></div>
-              <p class="feature-text"><strong>Droppers e Upgraders</strong> — geradores atualizáveis e plataformas de multiplicação de valor; velocidade das esteiras afeta o ganho médio.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #fbbf24"></div>
-              <p class="feature-text"><strong>Progressão por fases de vida</strong> — Maternidade → Berçário → Jardim de Infância → Escola, cada fase mais lucrativa.</p>
-            </div>
-            <div class="feature-row">
-              <div class="feature-dot" style="background: #fbbf24"></div>
-              <p class="feature-text"><strong>Gerentes e variantes</strong> — automatize com gerentes passivos e desbloqueie variantes como "Bebê Gênio" com valor base aumentado.</p>
+              <div class="feature-dot"></div>
+              <p class="feature-text"><strong>Droppers e Upgraders</strong> — geradores atualizáveis e multiplicadores.</p>
             </div>
           </div>
         </div>
         <div class="game-footer">
-          <span class="pill"><span class="pill-icon">👶</span> Ciclo de vida</span>
-          <span class="pill"><span class="pill-icon">🏭</span> Até 8 jogadores/servidor</span>
-          <span class="pill"><span class="pill-icon">🎨</span> Estilo cartunesco</span>
-          <span class="pill"><span class="pill-icon">📈</span> Renda por segundo</span>
+          <span class="pill">👶 Ciclo de vida</span>
+          <span class="pill">📈 Renda por segundo</span>
         </div>
       </div>
 
@@ -1081,11 +933,10 @@
   </div>
 </section>
 
-<!-- METODOLOGIA -->
 <section id="metodologia">
   <div class="container">
-    <p class="section-label">Como foi feito</p>
-    <h2 class="section-title">Metodologia do projeto</h2>
+    <p class="section-label">Tutorial</p>
+    <h2 class="section-title">Metodologia do Projeto</h2>
     <div class="divider"></div>
 
     <div class="method-grid">
@@ -1097,8 +948,8 @@
             <div class="step-connector"></div>
           </div>
           <div class="step-content">
-            <div class="step-title">Formação das equipes</div>
-            <div class="step-desc">Estudantes foram organizados em grupos multidisciplinares, cada um responsável por conceber um jogo do zero com tema e mecânicas próprias.</div>
+            <div class="step-title">Formação da Party</div>
+            <div class="step-desc">Estudantes organizados em grupos multidisciplinares.</div>
           </div>
         </div>
 
@@ -1109,7 +960,7 @@
           </div>
           <div class="step-content">
             <div class="step-title">Elaboração do GDD</div>
-            <div class="step-desc">Cada equipe produziu um Game Design Document completo, detalhando core loop, sistemas, progressão, arte, UI e contexto narrativo.</div>
+            <div class="step-desc">Produção do Game Design Document detalhando os sistemas.</div>
           </div>
         </div>
 
@@ -1119,8 +970,8 @@
             <div class="step-connector"></div>
           </div>
           <div class="step-content">
-            <div class="step-title">Integração de conteúdo estatístico</div>
-            <div class="step-desc">Os sistemas de jogo foram projetados para incorporar conceitos como distribuição de Poisson, Monty Hall, moda, mediana e média diretamente nas mecânicas.</div>
+            <div class="step-title">Integração de Stats</div>
+            <div class="step-desc">Sistemas projetados para incorporar conceitos de probabilidade e estatística.</div>
           </div>
         </div>
 
@@ -1130,8 +981,8 @@
             <div class="step-connector"></div>
           </div>
           <div class="step-content">
-            <div class="step-title">Desenvolvimento na plataforma Roblox</div>
-            <div class="step-desc">Utilizando as ferramentas nativas do Roblox Studio, os grupos implementaram protótipos jogáveis com os sistemas documentados.</div>
+            <div class="step-title">Build no Roblox</div>
+            <div class="step-desc">Implementação de protótipos jogáveis com as ferramentas nativas.</div>
           </div>
         </div>
 
@@ -1141,8 +992,8 @@
             <div class="step-connector"></div>
           </div>
           <div class="step-content">
-            <div class="step-title">Apresentação e avaliação</div>
-            <div class="step-desc">Os projetos foram apresentados, avaliados quanto à coerência do design, aplicação dos conceitos e qualidade da documentação produzida.</div>
+            <div class="step-title">Boss Fight (Apresentação)</div>
+            <div class="step-desc">Avaliação da coerência do design e aplicação dos conceitos.</div>
           </div>
         </div>
 
@@ -1151,198 +1002,191 @@
       <div>
         <div class="method-note">
           <h4>Por que Roblox?</h4>
-          <p>A plataforma Roblox oferece um ambiente acessível e familiar ao público jovem, com ferramentas de scripting em Lua e publicação instantânea para uma base de milhões de jogadores.</p>
-          <p>Isso permite que estudantes criem experiências reais — não apenas simulações — e vejam seu trabalho ter impacto imediato em uma audiência genuína.</p>
-          <p>A limitação tecnológica não é um obstáculo, mas um estímulo à criatividade dentro de um escopo gerenciável para um projeto de extensão.</p>
+          <p>A plataforma Roblox oferece um ambiente acessível ao público jovem, com scripts em Lua e publicação para milhões de jogadores.</p>
         </div>
 
-        <div class="method-note" style="margin-top: 1.5rem; border-left-color: var(--c-accent2);">
-          <h4 style="color: var(--c-accent2);">Estatística aplicada ao design</h4>
-          <p>Um diferencial do GameLab é exigir que os sistemas de jogo tenham fundamento matemático. A distribuição de Poisson no I Love Eating Trash, os puzzles probabilísticos no Final Class e as métricas de progressão no Life Factory Tycoon são exemplos diretos de currículo acadêmico convertido em diversão.</p>
+        <div class="method-note">
+          <h4>Estatística aplicada</h4>
+          <p>Exigimos que os sistemas tenham fundamento matemático, convertendo o currículo acadêmico em mecânicas divertidas.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- RESULTADOS -->
 <section id="resultados">
   <div class="container">
-    <p class="section-label">Impacto</p>
-    <h2 class="section-title">Resultados e aprendizados</h2>
+    <p class="section-label">Loot & XP</p>
+    <h2 class="section-title">Resultados e Aprendizados</h2>
     <div class="divider"></div>
 
     <div class="results-grid">
 
       <div class="result-card">
         <div class="result-icon">📄</div>
-        <div class="result-title">4 GDDs completos</div>
-        <div class="result-desc">Cada equipe entregou um documento de design robusto cobrindo gameplay, sistemas, arte, UI, narrativa e progressão.</div>
+        <div class="result-title">4 GDDs Completos</div>
+        <div class="result-desc">Documentos cobrindo gameplay, arte e narrativa.</div>
       </div>
 
       <div class="result-card">
         <div class="result-icon">📊</div>
-        <div class="result-title">Estatística em ação</div>
-        <div class="result-desc">Conceitos como Poisson, Monty Hall, moda e mediana foram convertidos em mecânicas reais e jogáveis.</div>
+        <div class="result-title">Estatística Viva</div>
+        <div class="result-desc">Poisson, moda e mediana convertidas em mecânicas.</div>
       </div>
 
       <div class="result-card">
         <div class="result-icon">🌱</div>
-        <div class="result-title">Tema ambiental</div>
-        <div class="result-desc">O I Love Eating Trash integra dados reais sobre poluição, conscientizando jogadores enquanto entretém.</div>
+        <div class="result-title">Impacto Real</div>
+        <div class="result-desc">Dados ambientais inseridos para conscientização.</div>
       </div>
 
       <div class="result-card">
         <div class="result-icon">🏫</div>
         <div class="result-title">Identidade UFES</div>
-        <div class="result-desc">O UFES RPG Online recriou digitalmente o campus Goiabeiras, criando pertencimento e conexão com a instituição.</div>
+        <div class="result-desc">Recriação digital do campus gerando pertencimento.</div>
       </div>
 
       <div class="result-card">
         <div class="result-icon">🧠</div>
-        <div class="result-title">Pensamento sistêmico</div>
-        <div class="result-desc">Os estudantes desenvolveram a capacidade de pensar em loops de feedback, balanceamento e progressão — habilidades transferíveis.</div>
+        <div class="result-title">Pensamento Sistêmico</div>
+        <div class="result-desc">Estudantes desenvolveram lógicas de balanceamento.</div>
       </div>
 
       <div class="result-card">
         <div class="result-icon">🎯</div>
-        <div class="result-title">Produtos reais</div>
-        <div class="result-desc">O projeto resultou em protótipos publicáveis no Roblox — experiências que podem alcançar uma audiência de milhões de jogadores jovens.</div>
+        <div class="result-title">Produtos Reais</div>
+        <div class="result-desc">Protótipos publicáveis prontos para jogar.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- EQUIPE -->
 <section id="equipe">
   <div class="container">
-    <p class="section-label">Coordenação</p>
-    <h2 class="section-title">Equipe do projeto</h2>
+    <p class="section-label">Guilda</p>
+    <h2 class="section-title">Membros do Projeto</h2>
     <div class="divider"></div>
-    <p class="section-desc">Docentes e estudantes participantes da execução do GameLab na UFES.</p>
 
-    <h3 style="margin-top:3rem; margin-bottom:1.5rem; font-family: var(--font-head); font-size:1.4rem;">Coordenação e equipe técnica</h3>
+    <h3 style="margin-top:3rem; margin-bottom:1.5rem; font-family: var(--font-head); font-size:1.1rem;">Game Masters</h3>
 
     <div class="team-grid">
 
       <div class="team-card coord">
         <div class="team-avatar">DD</div>
         <div class="team-name">Diego Roberto Colombo Dias</div>
-        <div class="team-role" style="margin-top:0.5rem">Coordenador</div>
+        <div class="team-role">Coordenador</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">BZ</div>
         <div class="team-name">Bartolomeu Zamprogno</div>
-        <div class="team-role" style="margin-top:0.5rem">Subcoordenador</div>
+        <div class="team-role">Subcoordenador</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">FM</div>
-        <div class="team-name">Fabio Alexander Fajardo Molinares</div>
-        <div class="team-role" style="margin-top:0.5rem">Subcoordenador</div>
+        <div class="team-name">Fabio Molinares</div>
+        <div class="team-role">Subcoordenador</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">HM</div>
         <div class="team-name">Hugo David Martins</div>
-        <div class="team-role" style="margin-top:0.5rem">Integrante</div>
+        <div class="team-role">Integrante</div>
       </div>
 
     </div>
 
-    <h3 style="margin-top:4rem; margin-bottom:1.5rem; font-family: var(--font-head); font-size:1.4rem; color: var(--c-accent1);">Alunos participantes</h3>
+    <h3 style="margin-top:4rem; margin-bottom:1.5rem; font-family: var(--font-head); font-size:1.1rem; color: var(--c-accent1);">Jogadores (Alunos)</h3>
 
     <div class="team-grid">
 
       <div class="team-card">
         <div class="team-avatar">AM</div>
         <div class="team-name">Andre de Mello</div>
-        <div class="team-role" style="margin-top:0.5rem">Estatística</div>
+        <div class="team-role">Estatística</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">AR</div>
         <div class="team-name">Arthur Maciel</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">BF</div>
         <div class="team-name">Brenda de Freitas</div>
-        <div class="team-role" style="margin-top:0.5rem">Design</div>
+        <div class="team-role">Design</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">DM</div>
         <div class="team-name">Daniel Melhem</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">FV</div>
         <div class="team-name">Fabiola Vilaca</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">GS</div>
         <div class="team-name">Gabriel Santos</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">IB</div>
         <div class="team-name">Igor Bittencourt</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">JL</div>
         <div class="team-name">Joao Lima</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">JR</div>
         <div class="team-name">Joao Rodrigues</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">LF</div>
         <div class="team-name">Leticia Ferreira</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">LL</div>
         <div class="team-name">Livia Lima</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">NS</div>
         <div class="team-name">Nathan dos Santos</div>
-        <div class="team-role" style="margin-top:0.5rem">Design</div>
+        <div class="team-role">Design</div>
       </div>
 
       <div class="team-card">
         <div class="team-avatar">VP</div>
         <div class="team-name">Vitor Passamani</div>
-        <div class="team-role" style="margin-top:0.5rem">Computação</div>
+        <div class="team-role">Computação</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-logo">GameLab</div>
-  <p class="footer-text">Projeto de Extensão · Universidade Federal do Espírito Santo · 2025</p>
-  <p class="footer-text" style="margin-top:0.4rem">Desenvolvido com criatividade, estatística e muito lixo espacial 🚀</p>
+  <p class="footer-text">Projeto de Extensão · UFES · 2025</p>
   <div class="footer-links">
     <a href="#sobre">Sobre</a>
     <a href="#objetivos">Objetivos</a>
