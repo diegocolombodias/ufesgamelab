@@ -400,6 +400,52 @@
       align-items: center;
     }
 
+    /* ── Embed de vídeo ───────────────────────────────────── */
+    .game-video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-bottom: 4px solid var(--c-border);
+      background: #000;
+      overflow: hidden;
+    }
+    .game-video iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ── Botão Jogar no Roblox ────────────────────────────── */
+    .btn-play {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-head);
+      font-size: 0.65rem;
+      background: var(--c-accent1) !important;
+      color: #000 !important;
+      border: 3px solid #000;
+      box-shadow: 3px 3px 0px #000;
+      padding: 0.45rem 1rem;
+      text-decoration: none;
+      text-shadow: none;
+      margin-left: auto;
+      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+    .btn-play:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 5px 5px 0px #000;
+      background: var(--c-accent3) !important;
+    }
+    .btn-play:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px #000;
+    }
+
     .pill {
       display: inline-flex;
       align-items: center;
@@ -675,35 +721,6 @@
       .nav-links { gap: 1.25rem; }
     }
 
-    /* ── Botão Jogar no Roblox ────────────────────────────── */
-    .btn-play {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-family: var(--font-head);
-      font-size: 0.65rem;
-      background: var(--c-accent1) !important;
-      color: #000 !important;
-      border: 3px solid #000;
-      box-shadow: 3px 3px 0px #000;
-      padding: 0.45rem 1rem;
-      text-decoration: none;
-      text-shadow: none;
-      margin-left: auto;
-      transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
-      white-space: nowrap;
-      letter-spacing: 0.03em;
-    }
-    .btn-play:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0px #000;
-      background: var(--c-accent3) !important;
-    }
-    .btn-play:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0px #000;
-    }
-
     @media (max-width: 600px) {
       .results-grid { grid-template-columns: 1fr; }
       .about-stats { grid-template-columns: 1fr; }
@@ -857,6 +874,9 @@
           <div class="game-title">I Love Eating Trash</div>
           <div class="game-genre">Aventura / Casual / Educativo</div>
         </div>
+        <div class="game-video">
+          <iframe src="https://www.youtube.com/embed/Dw3ZmMItqcY" title="I Love Eating Trash — gameplay" allowfullscreen loading="lazy"></iframe>
+        </div>
         <div class="game-body">
           <p class="game-pitch">
             Uma bola feita de lixo cresce absorvendo resíduos pelo mundo — de objetos domésticos até detritos espaciais. O jogador restaura a Terra enquanto aprende sobre impacto ambiental.
@@ -884,6 +904,9 @@
           <div class="game-tag">Quest 2</div>
           <div class="game-title">Final Class</div>
           <div class="game-genre">Educativo / Escape Room / Terror</div>
+        </div>
+        <div class="game-video">
+          <iframe src="https://www.youtube.com/embed/e3Xpskys5K8" title="Final Class — gameplay" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="game-body">
           <p class="game-pitch">
@@ -913,6 +936,9 @@
           <div class="game-title">UFES: RPG Online</div>
           <div class="game-genre">RPG de Ação com Mapa da UFES</div>
         </div>
+        <div class="game-video">
+          <iframe src="https://www.youtube.com/embed/1LnID_nJ1gU" title="UFES RPG Online — gameplay" allowfullscreen loading="lazy"></iframe>
+        </div>
         <div class="game-body">
           <p class="game-pitch">
             Um RPG ambientado no campus Goiabeiras da UFES. O jogador começa como calouro, derrota inimigos temáticos, ganha experiência e sobe de nível.
@@ -940,6 +966,9 @@
           <div class="game-tag">Quest 4</div>
           <div class="game-title">Life Factory Tycoon</div>
           <div class="game-genre">Tycoon / Incremental — Ciclo de Vida</div>
+        </div>
+        <div class="game-video">
+          <iframe src="https://www.youtube.com/embed/__ilf4g4MQs" title="Life Factory Tycoon — gameplay" allowfullscreen loading="lazy"></iframe>
         </div>
         <div class="game-body">
           <p class="game-pitch">
